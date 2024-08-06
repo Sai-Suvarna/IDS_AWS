@@ -1,0 +1,284 @@
+type BatchDetail {
+	batchId: Int
+	manufactureDate: AWSDate
+	expiryDate: AWSDate
+	quantity: String
+	createdUser: String
+	modifiedUser: String
+	rowstatus: Boolean
+}
+
+type BatchDetailType {
+	batchId: Int
+	manufactureDate: String
+	expiryDate: String
+	quantity: String
+	createdUser: String
+	modifiedUser: String
+}
+
+type Category {
+	categoryId: ID!
+	name: String!
+	image: String
+	rowstatus: Boolean!
+	createdUser: String!
+	modifiedUser: String!
+	createdTime: String!
+	modifiedTime: String!
+}
+
+# Define input type for creating category
+input CreateCategoryInput {
+	name: String!
+	image: String
+	rowstatus: Boolean
+}
+
+# Define response type for creating category
+type CreateCategoryResponse {
+	category: Category
+	statusCode: Int!
+	message: String!
+}
+
+type CreatePlacementResponse {
+	placementDetails: [PlacementDetail]
+	statusCode: Int
+	message: String
+}
+
+# Define input type for creating product
+input CreateProductInput {
+	productCode: String!
+	productName: String!
+	productDescription: String!
+	productCategory: String!
+	reOrderPoint: Int
+	brand: String
+	weight: String
+	dimensions: String
+	images: [String]
+	createdUser: String
+	modifiedUser: String
+	inventoryDetails: [InventoryInput]
+}
+
+# Define response type for creating product
+type CreateProductResponse {
+	statusCode: Int!
+	message: String!
+}
+
+# Define response type for deleting category
+type DeleteCategoryResponse {
+	categoryId: ID
+	statusCode: Int!
+	message: String!
+}
+
+type DeleteProductResponse {
+	productId: ID
+	statusCode: Int!
+	message: String
+}
+
+# Define the Inventory type
+type Inventory {
+	inventoryId: ID!
+	productId: ID!
+	quantityAvailable: String
+	minStockLevel: String
+	maxStockLevel: String
+	invreOrderPoint: Int
+	warehouseId: Int!
+	createdUser: String
+	modifiedUser: String
+	createdTime: String
+	modifiedTime: String
+	rowstatus: Boolean
+}
+
+# Define input type for inventory details
+input InventoryInput {
+	inventoryId: ID
+	warehouseId: Int!
+	minStockLevel: String!
+	maxStockLevel: String!
+	quantityAvailable: String
+	invreOrderPoint: Int
+}
+
+type Placement {
+	productId: Int
+	warehouseId: Int
+	placementId: Int
+	placementQuantity: Int
+	aile: String
+	bin: String
+	createdUser: String
+	modifiedUser: String
+	createdTime: AWSDateTime
+	modifiedTime: AWSDateTime
+	batches: [BatchDetail]
+	rowstatus: Boolean
+}
+
+type PlacementDetail {
+	placementId: Int!
+	warehouseId: Int
+	productId: Int
+	warehouseName: String
+	placements: [Placement]
+}
+
+type PlacementDetailType {
+	warehouseId: Int
+	productId: Int
+	warehouseName: String
+	placements: [PlacementType]
+}
+
+input PlacementInput {
+	placementId: Int
+	warehouseId: Int!
+	placementQuantity: String!
+	aile: String!
+	bin: String!
+	rowstatus: Boolean
+}
+
+type PlacementType {
+	productId: Int
+	warehouseId: Int
+	placementId: Int
+	placementQuantity: Int
+	aile: String
+	bin: String
+	createdUser: String
+	modifiedUser: String
+	createdTime: String
+	modifiedTime: String
+	batches: [BatchDetailType]
+}
+
+# Define the Product type
+type Product {
+	productId: ID!
+	productCode: String!
+	productName: String!
+	productDescription: String!
+	productCategory: Int!
+	# productCategory: ID! 
+	reOrderPoint: Int
+	brand: String
+	weight: String
+	dimensions: String
+	images: [String]
+	createdUser: String
+	modifiedUser: String
+	createdTime: String
+	modifiedTime: String
+	rowstatus: Boolean
+}
+
+type ProductDetails {
+	productId: Int
+	productCode: String
+	qrCode: String
+	productName: String
+	productDescription: String
+	productCategory: Category
+	reOrderPoint: Int
+	brand: String
+	weight: Float
+	dimensions: String
+	images: [String]
+	createdUser: String
+	modifiedUser: String
+	createdTime: String
+	modifiedTime: String
+	inventories: [Inventory]
+	placementDetails: [PlacementDetailType]
+}
+
+# Define input type for updating category
+input UpdateCategoryInput {
+	categoryId: ID!
+	name: String
+	image: String
+	rowstatus: Boolean
+}
+
+# Define response type for updating category
+type UpdateCategoryResponse {
+	category: Category
+	statusCode: Int!
+	message: String!
+}
+
+type UpdatePlacementResponse {
+	message: String
+	statusCode: Int
+	placementDetails: [PlacementDetail]
+}
+
+# Define input type for updating product
+input UpdateProductInput {
+	productId: ID!
+	productCode: String
+	productName: String
+	productDescription: String
+	productCategory: String
+	reOrderPoint: Int
+	brand: String
+	weight: String
+	dimensions: String
+	images: [String]
+	modifiedUser: String
+	inventoryDetails: [InventoryInput]
+}
+
+# Define response type for updating product
+type UpdateProductResponse {
+	statusCode: Int!
+	message: String!
+}
+
+type Warehouse {
+	warehouseId: ID
+	warehouseName: String
+}
+
+type Mutation {
+	createCategory(input: CreateCategoryInput!): CreateCategoryResponse
+	updateCategory(input: UpdateCategoryInput!): UpdateCategoryResponse
+	deleteCategory(categoryId: ID!): DeleteCategoryResponse
+	createProduct(input: CreateProductInput!): CreateProductResponse
+	updateProduct(input: UpdateProductInput!): UpdateProductResponse
+	deleteProduct(productId: ID!): DeleteProductResponse
+	createPlacement(
+		productId: Int!,
+		manufactureDate: AWSDate,
+		expiryDate: AWSDate,
+		quantity: String!,
+		placements: [PlacementInput!]!
+	): CreatePlacementResponse
+	updatePlacement(
+		placementId: Int!,
+		productId: Int!,
+		manufactureDate: String,
+		expiryDate: String,
+		quantity: String,
+		placements: [PlacementInput!]!
+	): UpdatePlacementResponse
+}
+
+type Query {
+	getCategoryById(categoryId: ID!): Category
+	getAllCategories: [Category]
+	getProductById(productId: Int!): ProductDetails
+	getAllProducts: [ProductDetails]
+	getAllPlacementDetails: [PlacementDetail]
+	getPlacementById(placementId: ID!): PlacementDetail
+}
